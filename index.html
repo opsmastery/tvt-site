@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#111217">
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("tvt-theme");if(t==="light"||t==="auto"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
   <meta property="og:type" content="website">
   <meta property="og:title" content="tvt: Telemetry Value Tracker">
   <meta property="og:description" content="Find the telemetry nobody reads. Cut it with a reviewed pull request.">
@@ -40,12 +41,16 @@
         <ul>
           <li><a href="#how">How it works</a></li>
           <li class="hide-sm"><a href="#safety">Safety</a></li>
-          <li class="hide-sm"><a href="#stacks">Stacks</a></li>
+          <li class="hide-sm"><a href="#see">See it</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li class="hide-sm"><a href="https://github.com/Opsmastery-Summit/tvt/releases">What's new</a></li>
           <li><a href="https://github.com/Opsmastery-Summit/tvt">GitHub</a></li>
         </ul>
       </nav>
+      <div class="theme" role="group" aria-label="Color theme">
+        <button type="button" data-set="dark">Dark</button><button type="button" data-set="light">Light</button><button type="button" data-set="auto">Auto</button>
+      </div>
     </div>
   </header>
 
@@ -63,6 +68,10 @@
         <div class="tile purple"><div class="label">Every change</div><div class="value">A reviewed PR</div></div>
         <div class="tile orange"><div class="label">When in doubt</div><div class="value">It keeps the data</div></div>
       </div>
+      <figure class="shot">
+        <img src="assets/report-recommendations.png" width="1280" height="720" alt="The tvt HTML report's recommendations table: each row names the change, the claim and the cheapest check, the monthly saving, the minutes to check it, and the owner.">
+        <figcaption>The report on the tvt test lab: every recommendation states its claim, the cheapest way to check it, what it saves and who owns it.</figcaption>
+      </figure>
     </div>
 
     <section id="how" aria-labelledby="how-h">
@@ -76,6 +85,77 @@
           <li><strong>Check.</strong> <code>tvt check</code> runs in your CI, offline. It judges the change against the protection manifest and fails it if anything an alert, SLO, viewed dashboard or record needs would be dropped.</li>
         </ol>
         <p class="note">After a change merges, the next scans measure what it actually saved, so the report shows measured savings, not estimates.</p>
+      </div>
+    </section>
+
+    <section id="see" aria-labelledby="see-h">
+      <div class="wrap">
+        <h2 id="see-h">See it work</h2>
+        <p class="intro">From the tvt test lab, a small Grafana stack seeded with known waste and known readers.</p>
+        <div class="views">
+          <figure>
+            <h3>The report</h3>
+            <img src="assets/report-summary.png" width="1280" height="330" alt="The top of the tvt report: recommendations, metric and stream savings per month, usage log coverage, and what is held back.">
+            <figcaption>One self-contained HTML page, plus JSON for your own tooling.</figcaption>
+          </figure>
+          <figure>
+            <h3>Why is this kept?</h3>
+<pre class="term"><code>$ tvt why shop_cart_operations_total
+  class keep_high; owner shop
+  costs 39.00 USD/month
+  last read 2026-11-23
+
+readers (5)
+  observed exact, dashboard JSON
+    Shop Overview / Cart operations
+  observed exact, query log
+    the same panel, as Prometheus ran it
+  observed inferred, assumed
+    Shop Overview / Counter rate
+<span class="dim">  observed inferred, query log
+    a sweep over every metric name:
+    never keeps a signal on its own</span></code></pre>
+            <figcaption>Every reader, where tvt saw it, and whether it's exact or assumed. Output trimmed to fit.</figcaption>
+          </figure>
+          <figure>
+            <h3>The gate in CI</h3>
+<pre class="term"><code>$ tvt check --base origin/main
+manifest scan 8: 1774 protected
+changed: alloy/config.alloy
+changed: otelcol/config.yaml
+changed: prometheus/scrape/lab.yml
+<span class="ok">PASS</span>
+
+<span class="dim"># drop a protected metric instead:</span>
+REFUSED: 1 findings
+  protected_signal: drops
+  shop_checkout_attempts_total,
+  hard_keep (protected in the
+  manifest before this change)</code></pre>
+            <figcaption>Offline, against the committed manifest. Exit 4 blocks the merge. Output trimmed to fit.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="proposes" aria-labelledby="proposes-h">
+      <div class="wrap">
+        <h2 id="proposes-h">What it proposes</h2>
+        <p class="intro">The least lossy change that keeps every reader working wins. Dropping is the last resort, not the first.</p>
+        <ul class="checklist">
+          <li>Remove a label nobody groups or filters by, or aggregate it away and keep the totals (behind <code>--label-drops</code> until a precision review on real data passes)</li>
+          <li>Scrape less often where dashboards use coarse steps</li>
+          <li>Send log lines below warn to a cheaper tier</li>
+          <li>Route an unread log stream to cold storage</li>
+          <li>Sample an unread stream that can't be rerouted</li>
+          <li>Collapse repeated log lines into one line with a count</li>
+          <li>Measure large keys in log lines and what capping them would save</li>
+          <li>Move dormant metrics to a cheaper tenant tier in Alloy</li>
+          <li>Drop a metric nothing reads</li>
+          <li>Hand line-level cuts to zeroreads, with the pattern and its cost</li>
+          <li>Flag costly rules: duplicates, unread recording rules, LogQL that parses raw logs</li>
+        </ul>
+        <p class="note">Records are never sampled, collapsed or dropped: audit logs, deploy and change events, and agent tool-call spans keep their outcome.</p>
       </div>
     </section>
 
@@ -135,6 +215,48 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
       </div>
     </section>
 
+    <section id="status" aria-labelledby="status-h">
+      <div class="wrap two">
+        <div>
+          <h2 id="status-h">Project status</h2>
+          <p class="intro">v0.1.0 is in release candidates, tested end to end on a local lab and on a Grafana Cloud stack. The core workflow is usable today.</p>
+          <ul class="checklist">
+            <li><code>init</code>, <code>scan</code>, <code>report</code>, <code>why</code></li>
+            <li><code>propose</code> for four pipeline formats</li>
+            <li><code>check</code> and owner confirmations</li>
+            <li>The savings ledger: measured, not estimated</li>
+            <li>Grafana OSS and Grafana Cloud</li>
+            <li>Signed, reproducible releases</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Coming next</h2>
+          <p class="intro">Planned after v0.1.0, in roughly this order. <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/docs/ROADMAP.md">The roadmap</a> has the detail.</p>
+          <ul class="checklist next">
+            <li><code>tvt serve</code>: scheduled scans and trend history</li>
+            <li>Cost by team or service</li>
+            <li>New waste flagged within a day of a release</li>
+            <li>Traces, and more log and metric backends</li>
+          </ul>
+          <p class="note">Release channels: tags ending in <code>-rc</code> are pre-releases for testing; plain version tags are stable.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="start" aria-labelledby="start-h">
+      <div class="wrap">
+        <div class="cta">
+          <h2 id="start-h">Find out what your telemetry is worth</h2>
+          <p>Point tvt at a Grafana stack, read the report, and decide for yourself. Nothing changes until you merge a pull request.</p>
+          <div class="actions">
+            <a class="btn primary" href="#install">Install tvt</a>
+            <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt/releases">Releases</a>
+            <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt/issues/new/choose">Open an issue</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="contact" class="contact" aria-labelledby="contact-h">
       <div class="wrap">
         <h2 id="contact-h">Contact</h2>
@@ -153,7 +275,21 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
     <div class="wrap">
       <span>tvt is open source under the <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/LICENSE">Apache License 2.0</a>.</span>
       <span><a href="https://github.com/Opsmastery-Summit/tvt">Source</a> · <a href="https://github.com/Opsmastery-Summit/tvt/releases">Releases</a> · <a href="https://github.com/Opsmastery-Summit/tvt/tree/main/docs">Docs</a></span>
+      <span>This site sets no cookies and runs no analytics or trackers.</span>
     </div>
   </footer>
+  <script>
+    (function () {
+      var root = document.documentElement, buttons = document.querySelectorAll(".theme button");
+      function show(t) { buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.set === t)); }); }
+      show(root.dataset.theme);
+      buttons.forEach(function (b) {
+        b.addEventListener("click", function () {
+          root.dataset.theme = b.dataset.set; show(b.dataset.set);
+          try { localStorage.setItem("tvt-theme", b.dataset.set); } catch (e) {}
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

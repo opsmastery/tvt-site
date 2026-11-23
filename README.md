@@ -3,7 +3,7 @@
 The website for [tvt (Telemetry Value Tracker)](https://github.com/Opsmastery-Summit/tvt),
 served by GitHub Pages at https://opsmastery-summit.github.io/tvt-site/.
 
-Plain HTML and CSS: no build step, no external fonts, scripts or trackers.
+Plain HTML and CSS: no build step, no external fonts or trackers. One small inline script remembers the Dark, Light or Auto theme.
 
 | Path | What |
 | --- | --- |
@@ -11,6 +11,7 @@ Plain HTML and CSS: no build step, no external fonts, scripts or trackers.
 | `404.html` | Not-found page (paths are absolute to `/tvt-site/`) |
 | `assets/style.css` | Styles; the palette is at the top |
 | `assets/logo.svg` | Logo and favicon |
+| `assets/report-*.png` | Screenshots of the report on the tvt test lab |
 | `assets/social-card.png` | 1200x630 preview image for links shared on LinkedIn and elsewhere |
 | `.github/workflows/pages.yml` | Deploys on every push to `main` |
 
