@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>tvt: Telemetry Value Tracker</title>
   <meta name="description" content="tvt finds the metrics, labels and log streams nobody reads, prices them, and opens a reviewed pull request to cut them. Open source, read-only, and safe by default.">
-  <link rel="canonical" href="https://opsmastery-summit.github.io/tvt-site/">
+  <link rel="canonical" href="https://tvt.opsmastery.dev/">
   <meta name="theme-color" content="#111217">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/style.css">
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="tvt: Telemetry Value Tracker">
   <meta property="og:description" content="Find the telemetry nobody reads. Cut it with a reviewed pull request.">
-  <meta property="og:url" content="https://opsmastery-summit.github.io/tvt-site/">
-  <meta property="og:image" content="https://opsmastery-summit.github.io/tvt-site/assets/social-card.png">
+  <meta property="og:url" content="https://tvt.opsmastery.dev/">
+  <meta property="og:image" content="https://tvt.opsmastery.dev/assets/social-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -26,8 +26,8 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Linux, macOS, Windows",
     "license": "https://www.apache.org/licenses/LICENSE-2.0",
-    "url": "https://opsmastery-summit.github.io/tvt-site/",
-    "codeRepository": "https://github.com/Opsmastery-Summit/tvt",
+    "url": "https://tvt.opsmastery.dev/",
+    "codeRepository": "https://github.com/opsmastery/tvt",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -44,8 +44,8 @@
           <li class="hide-sm"><a href="#see">See it</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li class="hide-sm"><a href="https://github.com/Opsmastery-Summit/tvt/releases">What's new</a></li>
-          <li><a href="https://github.com/Opsmastery-Summit/tvt">GitHub</a></li>
+          <li class="hide-sm"><a href="https://github.com/opsmastery/tvt/releases">What's new</a></li>
+          <li><a href="https://github.com/opsmastery/tvt">GitHub</a></li>
         </ul>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
@@ -61,7 +61,7 @@
       <p class="lead">tvt reads your dashboards, alerts and query logs to learn which metrics, labels and log streams anyone actually uses. It prices the rest, then opens a pull request to drop, aggregate or reroute them. A person reviews every change, and a pre-merge check refuses anything that would break an alert, an SLO or a viewed dashboard.</p>
       <div class="actions">
         <a class="btn primary" href="#install">Get started</a>
-        <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt">View on GitHub</a>
+        <a class="btn ghost" href="https://github.com/opsmastery/tvt">View on GitHub</a>
       </div>
       <div class="tiles" aria-label="What tvt promises">
         <div class="tile blue"><div class="label">Your backends</div><div class="value">Read-only</div></div>
@@ -186,7 +186,7 @@ REFUSED: 1 findings
           <ul class="pill-row">
             <li>Prometheus</li><li>Grafana Alloy</li><li>OpenTelemetry Collector</li><li>Fluent Bit</li>
           </ul>
-          <p class="note">Running something else? <a href="https://github.com/Opsmastery-Summit/tvt/discussions">Tell us what you use</a>.</p>
+          <p class="note">Running something else? <a href="https://github.com/opsmastery/tvt/discussions">Tell us what you use</a>.</p>
         </div>
         <div>
           <h2>Observability of its own</h2>
@@ -198,20 +198,20 @@ REFUSED: 1 findings
     <section id="install" aria-labelledby="install-h">
       <div class="wrap">
         <h2 id="install-h">Install</h2>
-        <p class="intro">Download a release for Linux, macOS or Windows, verify it, and run it. The full guide is in <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/docs/install.md">docs/install.md</a>.</p>
+        <p class="intro">Download a release for Linux, macOS or Windows, verify it, and run it. The full guide is in <a href="https://github.com/opsmastery/tvt/blob/main/docs/install.md">docs/install.md</a>.</p>
 <pre><code>VERSION=0.1.0-rc2 OS=darwin ARCH=arm64      # or linux, amd64
-gh release download "v$VERSION" --repo Opsmastery-Summit/tvt \
+gh release download "v$VERSION" --repo opsmastery/tvt \
   --pattern "tvt_${VERSION}_${OS}_${ARCH}.tar.gz" --pattern 'checksums.txt*'
 
 cosign verify-blob --bundle checksums.txt.sigstore.json \
-  --certificate-identity-regexp 'https://github.com/Opsmastery-Summit/tvt/' \
+  --certificate-identity-regexp 'https://github.com/opsmastery/tvt/' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   checksums.txt
 shasum -a 256 --ignore-missing -c checksums.txt
 
 tar -xzf "tvt_${VERSION}_${OS}_${ARCH}.tar.gz" tvt && sudo install -m 0755 tvt /usr/local/bin/tvt
 tvt init --grafana https://grafana.example.com --prom https://prometheus.example.com</code></pre>
-        <p class="note">From source with Go 1.27 or later: <code>go install github.com/Opsmastery-Summit/tvt/cmd/tvt@latest</code>. Want to try it without your own stack? <a href="https://github.com/Opsmastery-Summit/tvt-lab">tvt-lab</a> runs a local Grafana stack seeded with known waste.</p>
+        <p class="note">From source with Go 1.27 or later: <code>go install github.com/opsmastery/tvt/cmd/tvt@latest</code>. Want to try it without your own stack? <a href="https://github.com/opsmastery/tvt-lab">tvt-lab</a> runs a local Grafana stack seeded with known waste.</p>
       </div>
     </section>
 
@@ -231,7 +231,7 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
         </div>
         <div>
           <h2>Coming next</h2>
-          <p class="intro">Planned after v0.1.0, in roughly this order. <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/docs/ROADMAP.md">The roadmap</a> has the detail.</p>
+          <p class="intro">Planned after v0.1.0, in roughly this order. <a href="https://github.com/opsmastery/tvt/blob/main/docs/ROADMAP.md">The roadmap</a> has the detail.</p>
           <ul class="checklist next">
             <li><code>tvt serve</code>: scheduled scans and trend history</li>
             <li>Cost by team or service</li>
@@ -250,8 +250,8 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
           <p>Point tvt at a Grafana stack, read the report, and decide for yourself. Nothing changes until you merge a pull request.</p>
           <div class="actions">
             <a class="btn primary" href="#install">Install tvt</a>
-            <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt/releases">Releases</a>
-            <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt/issues/new/choose">Open an issue</a>
+            <a class="btn ghost" href="https://github.com/opsmastery/tvt/releases">Releases</a>
+            <a class="btn ghost" href="https://github.com/opsmastery/tvt/issues/new/choose">Open an issue</a>
           </div>
         </div>
       </div>
@@ -262,9 +262,9 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
         <h2 id="contact-h">Contact</h2>
         <p class="intro">Questions, bugs and ideas belong in the open, where others can find the answer too.</p>
         <div class="grid">
-          <div class="card"><h3>Questions and ideas</h3><p><a href="https://github.com/Opsmastery-Summit/tvt/discussions">GitHub Discussions</a>: ask how to fit tvt to your stack, or suggest what it should read next.</p></div>
-          <div class="card c-orange"><h3>Bugs</h3><p><a href="https://github.com/Opsmastery-Summit/tvt/issues/new/choose">Open an issue</a> with your tvt version, the command you ran and what you saw.</p></div>
-          <div class="card c-purple"><h3>Security</h3><p>Please don't open a public issue. Report vulnerabilities privately as described in the <a href="https://github.com/Opsmastery-Summit/tvt/security/policy">security policy</a>.</p></div>
+          <div class="card"><h3>Questions and ideas</h3><p><a href="https://github.com/opsmastery/tvt/discussions">GitHub Discussions</a>: ask how to fit tvt to your stack, or suggest what it should read next.</p></div>
+          <div class="card c-orange"><h3>Bugs</h3><p><a href="https://github.com/opsmastery/tvt/issues/new/choose">Open an issue</a> with your tvt version, the command you ran and what you saw.</p></div>
+          <div class="card c-purple"><h3>Security</h3><p>Please don't open a public issue. Report vulnerabilities privately as described in the <a href="https://github.com/opsmastery/tvt/security/policy">security policy</a>.</p></div>
           <div class="card c-green"><h3>Work with the maintainer</h3><p>Want help applying tvt to your observability stack? <a href="https://www.opsmasterysummit.com/book">Book time with Jason Vance</a>, or <a href="https://www.linkedin.com/in/jason-s-vance/">reach out on LinkedIn</a>.</p></div>
         </div>
       </div>
@@ -273,8 +273,8 @@ tvt init --grafana https://grafana.example.com --prom https://prometheus.example
 
   <footer>
     <div class="wrap">
-      <span>tvt is open source under the <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/LICENSE">Apache License 2.0</a>.</span>
-      <span><a href="https://github.com/Opsmastery-Summit/tvt">Source</a> · <a href="https://github.com/Opsmastery-Summit/tvt/releases">Releases</a> · <a href="https://github.com/Opsmastery-Summit/tvt/tree/main/docs">Docs</a></span>
+      <span>tvt is open source under the <a href="https://github.com/opsmastery/tvt/blob/main/LICENSE">Apache License 2.0</a>.</span>
+      <span><a href="https://github.com/opsmastery/tvt">Source</a> · <a href="https://github.com/opsmastery/tvt/releases">Releases</a> · <a href="https://github.com/opsmastery/tvt/tree/main/docs">Docs</a></span>
       <span>This site sets no cookies and runs no analytics or trackers.</span>
     </div>
   </footer>
