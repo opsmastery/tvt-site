@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tvt: Telemetry Value Tracker</title>
+  <meta name="description" content="tvt finds the metrics, labels and log streams nobody reads, prices them, and opens a reviewed pull request to cut them. Open source, read-only, and safe by default.">
+  <link rel="canonical" href="https://opsmastery-summit.github.io/tvt-site/">
+  <meta name="theme-color" content="#111217">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="tvt: Telemetry Value Tracker">
+  <meta property="og:description" content="Find the telemetry nobody reads. Cut it with a reviewed pull request.">
+  <meta property="og:url" content="https://opsmastery-summit.github.io/tvt-site/">
+  <meta property="og:image" content="https://opsmastery-summit.github.io/tvt-site/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "tvt (Telemetry Value Tracker)",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Linux, macOS, Windows",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "url": "https://opsmastery-summit.github.io/tvt-site/",
+    "codeRepository": "https://github.com/Opsmastery-Summit/tvt",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/logo.svg" alt="" width="28" height="28">tvt</a>
+      <nav aria-label="Main">
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li class="hide-sm"><a href="#safety">Safety</a></li>
+          <li class="hide-sm"><a href="#stacks">Stacks</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="https://github.com/Opsmastery-Summit/tvt">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap hero">
+      <span class="eyebrow">Open source, Apache 2.0</span>
+      <h1>Find the telemetry nobody reads. Cut it safely.</h1>
+      <p class="lead">tvt reads your dashboards, alerts and query logs to learn which metrics, labels and log streams anyone actually uses. It prices the rest, then opens a pull request to drop, aggregate or reroute them. A person reviews every change, and a pre-merge check refuses anything that would break an alert, an SLO or a viewed dashboard.</p>
+      <div class="actions">
+        <a class="btn primary" href="#install">Get started</a>
+        <a class="btn ghost" href="https://github.com/Opsmastery-Summit/tvt">View on GitHub</a>
+      </div>
+      <div class="tiles" aria-label="What tvt promises">
+        <div class="tile blue"><div class="label">Your backends</div><div class="value">Read-only</div></div>
+        <div class="tile purple"><div class="label">Every change</div><div class="value">A reviewed PR</div></div>
+        <div class="tile orange"><div class="label">When in doubt</div><div class="value">It keeps the data</div></div>
+      </div>
+    </div>
+
+    <section id="how" aria-labelledby="how-h">
+      <div class="wrap">
+        <h2 id="how-h">How it works</h2>
+        <p class="intro">One binary, four commands. Run it from a laptop or a CI job. Nothing to host.</p>
+        <ol class="steps">
+          <li><strong>Scan.</strong> <code>tvt scan</code> reads Grafana dashboards and view logs, alert and recording rules, and the query logs of Prometheus, Mimir and Loki. It builds a usage graph: which signal feeds which panel, alert or query, and what each one costs.</li>
+          <li><strong>Report.</strong> <code>tvt report</code> ranks what nobody reads by monthly savings and writes an HTML and JSON report. <code>tvt why</code> shows every reader of a signal, so you can check any recommendation yourself.</li>
+          <li><strong>Propose.</strong> <code>tvt propose</code> writes the change in the format of the pipeline that ingests the signal: Prometheus relabel rules, Grafana Alloy, the OpenTelemetry Collector or Fluent Bit. Each change opens as a draft pull request, with its revert ready.</li>
+          <li><strong>Check.</strong> <code>tvt check</code> runs in your CI, offline. It judges the change against the protection manifest and fails it if anything an alert, SLO, viewed dashboard or record needs would be dropped.</li>
+        </ol>
+        <p class="note">After a change merges, the next scans measure what it actually saved, so the report shows measured savings, not estimates.</p>
+      </div>
+    </section>
+
+    <section id="safety" aria-labelledby="safety-h">
+      <div class="wrap">
+        <h2 id="safety-h">Built so it can't hurt the stack it reads</h2>
+        <p class="intro">Cutting the wrong signal during an incident costs more than the bill. tvt is designed around that.</p>
+        <div class="grid five">
+          <div class="card"><h3>Read-only</h3><p>tvt reads through backend read APIs only, and tags every request so your own logs show exactly what it read. The only writes are Git pull requests.</p></div>
+          <div class="card c-purple"><h3>Fails closed</h3><p>A query it can't parse, a data source it doesn't read, or a backend that stops answering counts as a reader, never as "unused". A scan that loses a backend writes nothing.</p></div>
+          <div class="card c-orange"><h3>Hard keeps</h3><p>Alerts, recording rules, SLOs and viewed dashboards are never candidates. Warn-level and higher log lines are never dropped.</p></div>
+          <div class="card c-green"><h3>Least lossy first</h3><p>tvt prefers aggregating, downsampling or routing to cold storage over deleting, and every change ships with its revert.</p></div>
+          <div class="card c-yellow"><h3>Signed releases</h3><p>Release checksums are signed with cosign and builds are reproducible, so you can verify the binary you run.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stacks" aria-labelledby="stacks-h">
+      <div class="wrap two">
+        <div>
+          <h2 id="stacks-h">Works with your stack</h2>
+          <p class="intro">Self-hosted Grafana or Grafana Cloud. More backends are on the roadmap.</p>
+          <h3>Reads</h3>
+          <ul class="pill-row">
+            <li>Grafana (OSS and Cloud)</li><li>Prometheus</li><li>Mimir</li><li>Loki</li><li>OpenTelemetry Collector</li>
+          </ul>
+          <h3>Writes changes for</h3>
+          <ul class="pill-row">
+            <li>Prometheus</li><li>Grafana Alloy</li><li>OpenTelemetry Collector</li><li>Fluent Bit</li>
+          </ul>
+          <p class="note">Running something else? <a href="https://github.com/Opsmastery-Summit/tvt/discussions">Tell us what you use</a>.</p>
+        </div>
+        <div>
+          <h2>Observability of its own</h2>
+          <p class="intro">tvt emits its own traces and metrics over OTLP, with bounded labels and no tokens, names or queries at the default level. Point it at your collector and watch it work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="install" aria-labelledby="install-h">
+      <div class="wrap">
+        <h2 id="install-h">Install</h2>
+        <p class="intro">Download a release for Linux, macOS or Windows, verify it, and run it. The full guide is in <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/docs/install.md">docs/install.md</a>.</p>
+<pre><code>VERSION=0.1.0-rc2 OS=darwin ARCH=arm64      # or linux, amd64
+gh release download "v$VERSION" --repo Opsmastery-Summit/tvt \
+  --pattern "tvt_${VERSION}_${OS}_${ARCH}.tar.gz" --pattern 'checksums.txt*'
+
+cosign verify-blob --bundle checksums.txt.sigstore.json \
+  --certificate-identity-regexp 'https://github.com/Opsmastery-Summit/tvt/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  checksums.txt
+shasum -a 256 --ignore-missing -c checksums.txt
+
+tar -xzf "tvt_${VERSION}_${OS}_${ARCH}.tar.gz" tvt && sudo install -m 0755 tvt /usr/local/bin/tvt
+tvt init --grafana https://grafana.example.com --prom https://prometheus.example.com</code></pre>
+        <p class="note">From source with Go 1.27 or later: <code>go install github.com/Opsmastery-Summit/tvt/cmd/tvt@latest</code>. Want to try it without your own stack? <a href="https://github.com/Opsmastery-Summit/tvt-lab">tvt-lab</a> runs a local Grafana stack seeded with known waste.</p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact" aria-labelledby="contact-h">
+      <div class="wrap">
+        <h2 id="contact-h">Contact</h2>
+        <p class="intro">Questions, bugs and ideas belong in the open, where others can find the answer too.</p>
+        <div class="grid">
+          <div class="card"><h3>Questions and ideas</h3><p><a href="https://github.com/Opsmastery-Summit/tvt/discussions">GitHub Discussions</a>: ask how to fit tvt to your stack, or suggest what it should read next.</p></div>
+          <div class="card c-orange"><h3>Bugs</h3><p><a href="https://github.com/Opsmastery-Summit/tvt/issues/new/choose">Open an issue</a> with your tvt version, the command you ran and what you saw.</p></div>
+          <div class="card c-purple"><h3>Security</h3><p>Please don't open a public issue. Report vulnerabilities privately as described in the <a href="https://github.com/Opsmastery-Summit/tvt/security/policy">security policy</a>.</p></div>
+          <div class="card c-green"><h3>Work with the maintainer</h3><p>Want help applying tvt to your observability stack? <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-HANDLE/">Reach out to Jason Vance on LinkedIn</a>.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>tvt is open source under the <a href="https://github.com/Opsmastery-Summit/tvt/blob/main/LICENSE">Apache License 2.0</a>.</span>
+      <span><a href="https://github.com/Opsmastery-Summit/tvt">Source</a> · <a href="https://github.com/Opsmastery-Summit/tvt/releases">Releases</a> · <a href="https://github.com/Opsmastery-Summit/tvt/tree/main/docs">Docs</a></span>
+    </div>
+  </footer>
+</body>
+</html>
