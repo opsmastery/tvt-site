@@ -47,7 +47,6 @@ header.site { position: sticky; top: 0; z-index: 5; background: rgba(17, 18, 23,
 header.site .wrap { display: flex; align-items: center; height: 60px; gap: 20px; }
 header.site nav { margin-left: auto; }
 .brand { display: flex; align-items: center; gap: 10px; color: var(--heading); text-decoration: none; font-weight: 700; font-size: 1.1rem; }
-.brand img { width: 28px; height: 28px; }
 nav ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; flex-wrap: wrap; }
 nav a { color: var(--text); text-decoration: none; font-size: 0.95rem; }
 nav a:hover { color: var(--heading); }
@@ -154,3 +153,13 @@ pre.term .dim { color: var(--muted); }
 .cta { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; text-align: center; }
 .cta p { margin: 0 auto 20px; max-width: 60ch; }
 .cta .actions { justify-content: center; }
+
+/* Header logo: the dark or light lockup, following the theme */
+.brand img { width: auto; height: 32px; }
+.brand .logo-light { display: none; }
+html[data-theme="light"] .brand .logo-dark { display: none; }
+html[data-theme="light"] .brand .logo-light { display: block; }
+@media (prefers-color-scheme: light) {
+  html[data-theme="auto"] .brand .logo-dark { display: none; }
+  html[data-theme="auto"] .brand .logo-light { display: block; }
+}
